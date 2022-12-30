@@ -45,7 +45,7 @@
       const bearerToken = tokenData.access_token;
 
        // Send a request to the user timeline endpoint to get the user's tweets
-      const timelineResponse = await fetch(`https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=${handle}`, {
+      const timelineResponse = await fetch(`https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=${handle})`, {
         headers: {
           "Authorization": `Bearer ${bearerToken}`
         }
