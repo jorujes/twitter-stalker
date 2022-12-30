@@ -15,14 +15,6 @@
       margin: 10px;
     }
   </style>
-</head>
-<body>
-  <form id="twitter-form">
-    <label for="twitter-url">Twitter profile URL:</label><br>
-    <input type="text" id="twitter-url" name="twitter-url"><br>
-    <input type="submit" value="Submit">
-  </form> 
-  <div class="media-grid"></div>
   <script>
     // Twitter API credentials
     const consumerKey = "I0kS2ducUCUsLnt4QZzn0Hhzt";
@@ -31,38 +23,39 @@
     const accessTokenSecret = "VolgQxMqENAJNtr58UjvimXsbYQZnCisocrqXMd7fDR2o";
 
     // Extract the Twitter handle from the URL
-function getTwitterHandle(url) {
-  const regex = /twitter\.com\/([^\/]+)/;
-  const match = url.match(regex);
-  return match ? match[1] : null;
-}
-
-// Fetch the media from the Twitter profile
-async function fetchTwitterMedia(handle) {
-  // Create the authorization header
-  const authHeader = btoa(`${consumerKey}:${consumerSecret}`);
-
-  // Send a request to the token endpoint to get a bearer token
-  const tokenResponse = await fetch("https://api.twitter.com/oauth2/token", {
-    method: "POST",
-    headers: {
-      "Authorization": `Basic ${authHeader}`,
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-    },
-    body: "grant_type=client_credentials"
-  });
-  const tokenData = await tokenResponse.json();
-  const bearerToken = tokenData.access_token;
-
-  // Send a request to the user timeline endpoint to get the user's tweets
-  const timelineResponse = await fetch(`https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=${handle}`, {
-    headers: {
-      "Authorization": `Bearer ${bearerToken}`
+    function getTwitterHandle(url) {
+      const regex = /twitter\.com\/([^\/]+)/;
+      const match = url.match(regex);
+      return match ? match[1] : null;
     }
-  });
-  const timelineData = await timelineResponse.json();
 
-  // Extract the media URLs from the tweets
+    // Fetch the media from the Twitter profile
+    async function fetchTwitterMedia(handle) {
+      // Create the authorization header
+      const authHeader = btoa(`${consumerKey}:${consumerSecret}`);
+
+      // Send a request to the token endpoint to get a bearer token
+      const tokenResponse = await fetch("https://api.twitter.com/oauth2/token", {
+        method: "POST",
+        headers: {
+          "Authorization": `Basic ${authHeader}`,
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+        body: "grant_type=client_credentials"
+      });
+      const tokenData = await tokenResponse.json();
+      const bearerToken = tokenData.access_token;
+
+      // Send a request to the user timeline endpoint to get the user's tweets
+const timelineResponse = await fetch(https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=${handle}, {
+headers: {
+"Authorization": Bearer ${bearerToken}
+},
+mode: "no-cors"
+});
+const timelineData = await timelineResponse.json();
+    
+     // Extract the media URLs from the tweets
   const mediaUrls = [];
   for (const tweet of timelineData) {
     if (tweet.entities.media) {
@@ -77,11 +70,11 @@ async function fetchTwitterMedia(handle) {
 // Display the media on the page
 async function displayTwitterMedia(mediaUrls) {
   const mediaGrid = document.querySelector(".media-grid");
-for (const url of mediaUrls) {
-const img = document.createElement("img");
-img.src = url;
-mediaGrid.appendChild(img);
-}
+  for (const url of mediaUrls) {
+    const img = document.createElement("img");
+    img.src = url;
+    mediaGrid.appendChild(img);
+  }
 }
 
 // Handle the form submission
@@ -97,7 +90,14 @@ twitterForm.addEventListener("submit", async (event) => {
   const mediaUrls = await fetchTwitterMedia(handle);
   displayTwitterMedia(mediaUrls);
 });
-
-</script>
+  </script>
+</head>
+<body>
+  <form id="twitter-form">
+    <label for="twitter-url">Twitter profile URL:</label><br>
+    <input type="text" id="twitter-url" name="twitter-url"><br>
+    <input type="submit" value="Submit">
+  </form> 
+  <div class="media-grid"></div>
 </body>
 </html>
