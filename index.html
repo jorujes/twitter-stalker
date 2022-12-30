@@ -2,13 +2,64 @@
 <html>
 <head>
   <title>Twitter Media App</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+  <style>
+    body {
+      background-color: #fafafa;
+      font-family: 'Roboto', sans-serif;
+    }
+    h1 {
+      text-align: center;
+      font-size: 32px;
+      margin: 32px 0 16px;
+    }
+    form {
+      width: 400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+    button[type="submit"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button[type="submit"]:hover {
+      background-color: #46a049;
+    }
+    #media-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 32px;
+    }
+    #media-container img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      margin: 8px;
+    }
+  </style>
 </head>
 <body>
   <h1>Twitter Media App</h1>
   <form id="twitter-form">
-    <label for="username">Twitter username:</label><br>
-    <input type="text" id="username" name="username"><br>
-    <button type="submit">Submit</button>
+    <input type="text" id="username" name="username" placeholder="Twitter username">
+    <button type="submit">Get Media</button>
   </form>
   <div id="media-container"></div>
   <script>
