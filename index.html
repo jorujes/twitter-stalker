@@ -44,14 +44,13 @@
       const tokenData = await tokenResponse.json();
       const bearerToken = tokenData.access_token;
 
-      // Send a request to the user timeline endpoint to get the user's tweets
-const timelineResponse = await fetch(https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=${handle}, {
-headers: {
-"Authorization": Bearer ${bearerToken}
-},
-mode: "no-cors"
-});
-const timelineData = await timelineResponse.json();
+       // Send a request to the user timeline endpoint to get the user's tweets
+      const timelineResponse = await fetch(`https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=${handle}`, {
+        headers: {
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+      const timelineData = await timelineResponse.json();
     
      // Extract the media URLs from the tweets
   const mediaUrls = [];
