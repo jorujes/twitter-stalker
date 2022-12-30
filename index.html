@@ -1,101 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style>
-    .media-grid {
-      display: flex;
-      flex-wrap: wrap;
-      width: 800px;
-      margin: 0 auto;
-    }
-    .media-grid img {
-      width: 200px;
-      height: 200px;
-      object-fit: cover;
-      margin: 10px;
-    }
-  </style>
+  <title>Twitter Media App</title>
 </head>
 <body>
+  <h1>Twitter Media App</h1>
   <form id="twitter-form">
-    <label for="twitter-url">Twitter profile URL:</label><br>
-    <input type="text" id="twitter-url" name="twitter-url"><br>
-    <input type="submit" value="Submit">
-  </form> 
-  <div class="media-grid"></div>
+    <label for="username">Twitter username:</label><br>
+    <input type="text" id="username" name="username"><br>
+    <button type="submit">Submit</button>
+  </form>
+  <div id="media-container"></div>
   <script>
-    // Twitter API credentials
-   const authHeader = "AAAAAAAAAAAAAAAAAAAAAAiqkwEAAAAAoQWYuazn3SsHLPFWF3aEiGTzzp0%3D0KmpFsAXAc9C4V2p2QhacPpMIZwNVdURMK52iUvac8s0fnz6cu";
-   const bearerToken = "AAAAAAAAAAAAAAAAAAAAAAiqkwEAAAAAoQWYuazn3SsHLPFWF3aEiGTzzp0%3D0KmpFsAXAc9C4V2p2QhacPpMIZwNVdURMK52iUvac8s0fnz6cu";
-
-    // Extract the Twitter handle from the URL
-    function getTwitterHandle(url) {
-      const regex = /twitter\.com\/([^\/]+)/;
-      const match = url.match(regex);
-      return match ? match[1] : null;
-    }
-
-    // Fetch the media from the Twitter profile
-    async function fetchTwitterMedia(handle) {
-      // Create the authorization header
-      const authHeader = btoa(`${consumerKey}:${consumerSecret}`);
-
-      // Send a request to the token endpoint to get a bearer token
-      const tokenResponse = await fetch("https://api.twitter.com/oauth2/token", {
-        method: "POST",
-        headers: {
-          "Authorization": `Basic ${authHeader}`,
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-        },
-        body: "grant_type=client_credentials"
-      });
-      const tokenData = await tokenResponse.json();
-      const bearerToken = tokenData.access_token;
-
-      // Send a request to the user timeline endpoint to get the user's tweets
-      const timelineResponse = await fetch(`https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=${handle}`, {
-        headers: {
-          "Authorization": `Bearer ${bearerToken}`
-        }
-      });
-      const timelineData = await timelineResponse.json();
-
-      // Extract the media URLs from the tweets
-      const mediaUrls = [];
-      for (const tweet of timelineData) {
-        if (tweet.entities.media) {
-          for (const media of tweet.entities.media) {
-            mediaUrls.push(media.media_url_https);
-          }
-        }
-      }
-      return mediaUrls;
-    }
-
-    // Display the media on the page
-    async function displayTwitterMedia(mediaUrls) {
-      const mediaGrid = document.querySelector(".media-grid");
-      for (const url of mediaUrls) {
-        const img = document.createElement("img");
-        img.src = url;
-        mediaGrid.appendChild(img);
-      }
-    }
-
-    // Handle the form submission
-    const twitterForm = document.querySelector("#twitter-form");
-    twitterForm.addEventListener("submit", async (event) => {
+    // Add an event listener to the form submission
+    document.querySelector('#twitter-form').addEventListener('submit', (event) => {
+      // Prevent the form from refreshing the page
       event.preventDefault();
-      const twitterUrl = document.querySelector("#twitter-url").value;
-      const handle = getTwitterHandle(twitterUrl);
-      if (!handle) {
-        alert("Invalid Twitter URL");
-        return;
-      }
-      const mediaUrls = await fetchTwitterMedia(handle);
-      displayTwitterMedia(mediaUrls);
-    });
 
-</script>
+      // Get the inputted username from the form
+      const username = document.querySelector('#username').value;
+
+      // Make a request to the Twitter API using the fetch() function
+      fetch(`https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=${username}&include_entities=true`, {
+        headers: {
+          'Authorization': 'Bearer YOUR_API_KEY_HERE'
+        }
+      })
+        .then((response) => {
+          // Check if the request was successful
+          if (response.ok) {
+            // Parse the response as JSON
+            return response.json();
+          }
+          throw new Error('Request failed');
+        })
+        .then((data) => {
+          // Extract the media attachments from the tweets
+          const media = data.map((tweet) => tweet.entities.media).flat();
+
+          // Clear the media container
+          document.querySelector('#media-container').innerHTML = '';
+
+          // Add the media attachments to the media container
+          media.forEach((attachment) => {
+            const img = document.createElement('img');
+            img.src = attachment.media_url;
+            document.querySelector('#media-container').appendChild(img);
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+  </script>
 </body>
 </html>
